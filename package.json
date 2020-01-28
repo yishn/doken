@@ -1,0 +1,37 @@
+{
+  "name": "doken",
+  "version": "0.0.1-alpha",
+  "description": "A general purpose tokenizer generator",
+  "main": "./src/main.js",
+  "scripts": {
+    "test": "tap",
+    "format": "prettier \"**/*.js\" --write",
+    "format-watch": "onchange \"**/*.js\" -- prettier --write {{changed}}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yishn/doken.git"
+  },
+  "keywords": [
+    "lexer",
+    "tokenizer",
+    "parser",
+    "generator"
+  ],
+  "author": "Yichuan Shen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yishn/doken/issues"
+  },
+  "homepage": "https://github.com/yishn/doken#readme",
+  "devDependencies": {
+    "onchange": "^6.1.0",
+    "prettier": "1.19.1",
+    "tap": "^14.10.6"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "bracketSpacing": false
+  }
+}
