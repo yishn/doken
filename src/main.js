@@ -1,6 +1,6 @@
 const Peekable = require('./Peekable')
 
-exports.regexRule = function(type, regex, transform = match => match[0]) {
+exports.regexRule = function(type, regex, value = match => match[0]) {
   return {
     type,
     match: input => {
@@ -9,7 +9,7 @@ exports.regexRule = function(type, regex, transform = match => match[0]) {
 
       return {
         length: match[0].length,
-        value: transform(match)
+        value: value(match)
       }
     }
   }

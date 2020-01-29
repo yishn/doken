@@ -24,7 +24,7 @@ export interface TokenIterator extends IterableIterator<Token> {
 export function regexRule(
   type: string,
   regex: RegExp,
-  transform?: (match: RegExpExecArray) => any
+  value?: (match: RegExpExecArray) => any
 ): Rule
 
 export function createTokenizer(options: {
