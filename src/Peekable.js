@@ -10,7 +10,7 @@ class Peekable {
   }
 
   next() {
-    let next = this._peeked ? this._peekedItem : this.iterator.next()
+    let next = this._peeked ? this._peekedItem : this._iterator.next()
 
     this._peekedItem = undefined
     this._peeked = false
@@ -20,7 +20,7 @@ class Peekable {
 
   peek() {
     if (!this._peeked) {
-      this._peekedItem = this.iterator.next()
+      this._peekedItem = this._iterator.next()
       this._peeked = true
     }
 
