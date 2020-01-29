@@ -45,6 +45,8 @@ exports.createTokenizer = function({rules, shouldStop = token => false}) {
               pos,
               length: match.length
             }
+
+            break
           }
 
           if (token == null) {

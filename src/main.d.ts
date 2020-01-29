@@ -9,7 +9,7 @@ export interface Token {
 
 export interface Rule {
   type: string
-  match?: (input: string) => RuleMatch
+  match?: (input: string) => RuleMatch | null
 }
 
 export interface RuleMatch {
