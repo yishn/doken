@@ -32,9 +32,12 @@ exports.createTokenizer = function({rules, shouldStop = token => false}) {
             let match = rule(restInput)
             if (match == null) continue
 
+            let value = match.value
+            if (value === undefined) value = restInput.slice(0, match.length)
+
             token = {
               type,
-              value: match.value,
+              value,
               row,
               col,
               pos,
