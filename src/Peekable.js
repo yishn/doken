@@ -1,12 +1,16 @@
 class Peekable {
   constructor(iterator) {
-    this[Symbol.iterator] = () => iterator
+    this._iterator = iterator
     this._peekedItem = undefined
     this._peeked = false
   }
 
+  [Symbol.iterator]() {
+    return this
+  }
+
   next() {
-    let next = this._peeked ? this._peekedItem : this[Symbol.iterator]().next()
+    let next = this._peeked ? this._peekedItem : this.iterator.next()
 
     this._peekedItem = undefined
     this._peeked = false
@@ -16,7 +20,7 @@ class Peekable {
 
   peek() {
     if (!this._peeked) {
-      this._peekedItem = this[Symbol.iterator]().next()
+      this._peekedItem = this.iterator.next()
       this._peeked = true
     }
 

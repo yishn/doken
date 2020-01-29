@@ -17,7 +17,7 @@ export interface RuleMatch {
   value?: any
 }
 
-export interface TokenIterator extends Iterable<Token>, Iterator<Token> {
+export interface TokenIterator extends IterableIterator<Token> {
   peek(): Token
 }
 
