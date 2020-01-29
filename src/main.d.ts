@@ -9,12 +9,16 @@ export interface Token {
 
 export interface Rule {
   type: string
-  match?: (input: string) => RuleMatch | null
+  match?(input: string): RuleMatch | null
 }
 
 export interface RuleMatch {
   length: number
   value?: any
+}
+
+export interface TokenIterator extends Iterable<Token>, Iterator<Token> {
+  peek(): Token
 }
 
 export function regexRule(
@@ -26,4 +30,4 @@ export function regexRule(
 export function createTokenizer(options: {
   rules: Rule[]
   shouldStop?: (token: Token) => boolean
-}): (input: string) => IterableIterator<Token>
+}): (input: string) => TokenIterator
