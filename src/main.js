@@ -1,16 +1,16 @@
 exports.regexRule = function(type, regex, transform = match => match[0]) {
-  return [
+  return {
     type,
-    input => {
+    match: input => {
       let match = regex.exec(input)
-      if (match == null) return null
+      if (match == null || match.index !== 0) return null
 
       return {
         length: match[0].length,
         value: transform(match)
       }
     }
-  ]
+  }
 }
 
 exports.createTokenizer = function({rules, shouldStop = token => false}) {
@@ -22,13 +22,15 @@ exports.createTokenizer = function({rules, shouldStop = token => false}) {
     let finished = false
 
     return {
-      next() {
-        while (true) {
-          if (finished || restInput.length === 0) return {done: true}
+      [Symbol.iterator]() {
+        return this
+      },
 
+      next() {
+        while (!finished && restInput.length > 0) {
           let token = null
 
-          for (let [type, rule] of rules) {
+          for (let {type, match: rule} of rules) {
             let match = rule(restInput)
             if (match == null) continue
 
@@ -79,10 +81,12 @@ exports.createTokenizer = function({rules, shouldStop = token => false}) {
 
           // Return token
 
-          if (token.type[0] !== '_') {
+          if (token.type == null || token.type[0] !== '_') {
             return {value: token, done: false}
           }
         }
+
+        return {done: true}
       }
     }
   }

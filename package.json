@@ -5,8 +5,8 @@
   "main": "./src/main.js",
   "scripts": {
     "test": "tap",
-    "format": "prettier \"**/*.js\" --write",
-    "format-watch": "onchange \"**/*.js\" -- prettier --write {{changed}}"
+    "format": "prettier \"**/*.{j,t}s\" --write",
+    "format-watch": "onchange \"**/*.{j,t}s\" -- prettier --write {{changed}}"
   },
   "repository": {
     "type": "git",
