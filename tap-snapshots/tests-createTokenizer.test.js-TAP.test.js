@@ -46,7 +46,7 @@ Array [
     "length": 1,
     "pos": 15,
     "row": 2,
-    "type": null,
+    "type": "number",
     "value": "0",
   },
   Object {
@@ -75,19 +75,11 @@ Array [
   },
   Object {
     "col": 4,
-    "length": 1,
+    "length": 2,
     "pos": 33,
     "row": 4,
-    "type": null,
-    "value": "-",
-  },
-  Object {
-    "col": 5,
-    "length": 1,
-    "pos": 34,
-    "row": 4,
-    "type": null,
-    "value": "2",
+    "type": "number",
+    "value": "-2",
   },
   Object {
     "col": 6,
@@ -216,6 +208,29 @@ Array [
     "row": 11,
     "type": "brace",
     "value": "}",
+  },
+]
+`
+
+exports[
+  `tests/createTokenizer.test.js TAP Create JSON tokenizer > Test invalid token 1`
+] = `
+Array [
+  Object {
+    "col": 0,
+    "length": 1,
+    "pos": 0,
+    "row": 0,
+    "type": "brace",
+    "value": "{",
+  },
+  Object {
+    "col": 1,
+    "length": 1,
+    "pos": 1,
+    "row": 0,
+    "type": null,
+    "value": "a",
   },
 ]
 `
