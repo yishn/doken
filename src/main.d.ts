@@ -18,7 +18,7 @@ export interface RuleMatch {
 }
 
 export interface TokenIterator extends IterableIterator<Token> {
-  peek(): IteratorResult<Token>
+  peek(): Token
 }
 
 export function regexRule(

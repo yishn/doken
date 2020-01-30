@@ -24,7 +24,7 @@ class Peekable {
       this._peeked = true
     }
 
-    return this._peekedItem
+    return this._peekedItem.done ? undefined : this._peekedItem.value
   }
 }
 
