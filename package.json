@@ -4,7 +4,7 @@
   "description": "A general purpose tokenizer generator",
   "main": "./src/main.js",
   "scripts": {
-    "test": "tap",
+    "test": "cd tests && tap",
     "format": "prettier \"**/*.{j,t}s\" --write",
     "format-watch": "onchange \"**/*.{j,t}s\" -- prettier --write {{changed}}"
   },

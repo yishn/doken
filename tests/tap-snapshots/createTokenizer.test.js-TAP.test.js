@@ -6,7 +6,7 @@
  */
 'use strict'
 exports[
-  `tests/createTokenizer.test.js TAP Create JSON tokenizer > Test JSON tokens 1`
+  `createTokenizer.test.js TAP Create JSON tokenizer > Test JSON tokens 1`
 ] = `
 Array [
   Object {
@@ -213,7 +213,7 @@ Array [
 `
 
 exports[
-  `tests/createTokenizer.test.js TAP Create JSON tokenizer > Test invalid token 1`
+  `createTokenizer.test.js TAP Create JSON tokenizer > Test invalid token 1`
 ] = `
 Array [
   Object {
