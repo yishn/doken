@@ -1,5 +1,3 @@
-const Peekable = require('./Peekable')
-
 exports.regexRule = function(type, regex, value = match => match[0]) {
   return {
     type,
@@ -23,7 +21,11 @@ exports.createTokenizer = function({rules, shouldStop = token => false}) {
     let restInput = input
     let finished = false
 
-    return new Peekable({
+    return {
+      [Symbol.iterator]() {
+        return this
+      },
+
       next() {
         while (!finished && restInput.length > 0) {
           let token = null
@@ -88,6 +90,6 @@ exports.createTokenizer = function({rules, shouldStop = token => false}) {
 
         return {done: true}
       }
-    })
+    }
   }
 }

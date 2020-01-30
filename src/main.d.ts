@@ -17,10 +17,6 @@ export interface RuleMatch {
   value?: any
 }
 
-export interface TokenIterator extends IterableIterator<Token> {
-  peek(): Token | null
-}
-
 export function regexRule(
   type: string,
   regex: RegExp,
@@ -30,4 +26,4 @@ export function regexRule(
 export function createTokenizer(options: {
   rules: Rule[]
   shouldStop?: (token: Token) => boolean
-}): (input: string) => TokenIterator
+}): (input: string) => IterableIterator<Token>
