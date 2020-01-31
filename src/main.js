@@ -5,9 +5,12 @@ exports.regexRule = function(type, regex, value = match => match[0]) {
       let match = regex.exec(input)
       if (match == null || match.index !== 0) return null
 
+      let val = value(match)
+      if (val == null) return null
+
       return {
         length: match[0].length,
-        value: value(match)
+        value: val
       }
     }
   }
