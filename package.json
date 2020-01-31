@@ -1,12 +1,12 @@
 {
   "name": "doken",
   "version": "0.0.8-alpha",
-  "description": "A general purpose tokenizer generator",
+  "description": "A minimalistic, general purpose tokenizer generator",
   "main": "./src/main.js",
   "scripts": {
     "test": "cd tests && tap",
-    "format": "prettier \"**/*.{j,t}s\" --write",
-    "format-watch": "onchange \"**/*.{j,t}s\" -- prettier --write {{changed}}"
+    "format": "prettier \"**/*.{{j,t}s,md}\" --write",
+    "format-watch": "onchange \"**/*.{{j,t}s,md}\" -- prettier --write {{changed}}"
   },
   "repository": {
     "type": "git",
