@@ -232,5 +232,29 @@ Array [
     "type": null,
     "value": "a",
   },
+  Object {
+    "col": 2,
+    "length": 1,
+    "pos": 2,
+    "row": 0,
+    "type": "colon",
+    "value": ":",
+  },
+  Object {
+    "col": 4,
+    "length": 1,
+    "pos": 4,
+    "row": 0,
+    "type": "number",
+    "value": "0",
+  },
+  Object {
+    "col": 5,
+    "length": 1,
+    "pos": 5,
+    "row": 0,
+    "type": "brace",
+    "value": "}",
+  },
 ]
 `

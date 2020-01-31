@@ -25,5 +25,4 @@ export function regexRule(
 
 export function createTokenizer(options: {
   rules: Rule[]
-  shouldStop?: (token: Token) => boolean
 }): (input: string) => IterableIterator<Token>

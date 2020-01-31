@@ -11,10 +11,13 @@ t.test('Create JSON tokenizer', async t => {
       regexRule('comma', /^,/),
       regexRule('string', /^"([^"\n\\]|\\[^\n])*"/),
       regexRule('number', /^(-|\+)?\d+(.\d+)?/),
-      regexRule('boolean', /^(true|false)(?!\w)/),
-      regexRule('null', /^null(?!\w)/)
-    ],
-    shouldStop: token => token.type == null
+      regexRule('boolean', /^\w+/, match =>
+        ['true', 'false'].includes(match[0]) ? match[0] : null
+      ),
+      regexRule('null', /^\w+/, match =>
+        match[0] === 'null' ? match[0] : null
+      )
+    ]
   })
 
   let test = {
@@ -49,7 +52,5 @@ t.test('Create JSON tokenizer', async t => {
   // Test invalid token
 
   tokens = [...tokenize('{a: 0}')]
-
   t.matchSnapshot(tokens, 'Test invalid token')
-  t.equal(tokens[tokens.length - 1].type, null)
 })

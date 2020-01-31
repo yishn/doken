@@ -16,13 +16,12 @@ exports.regexRule = function(type, regex, value = match => match[0]) {
   }
 }
 
-exports.createTokenizer = function({rules, shouldStop = token => false}) {
+exports.createTokenizer = function({rules}) {
   return function tokenize(input) {
     let row = 0
     let col = 0
     let pos = 0
     let restInput = input
-    let finished = false
 
     return {
       [Symbol.iterator]() {
@@ -30,7 +29,7 @@ exports.createTokenizer = function({rules, shouldStop = token => false}) {
       },
 
       next() {
-        while (!finished && restInput.length > 0) {
+        while (restInput.length > 0) {
           let token = null
 
           for (let {type, match: rule} of rules) {
@@ -61,10 +60,6 @@ exports.createTokenizer = function({rules, shouldStop = token => false}) {
               pos,
               length: 1
             }
-          }
-
-          if (shouldStop(token)) {
-            finished = true
           }
 
           // Update source position
