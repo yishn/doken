@@ -49,8 +49,8 @@ t.test('Create JSON tokenizer', async t => {
   let reconstructed = tokens.map(t => t.value).join('')
   t.strictDeepEqual(JSON.parse(reconstructed), test)
 
-  // Test invalid token
+  // Test invalid tokens
 
-  tokens = [...tokenize('{a: 0}')]
+  tokens = [...tokenize('{a: 0, "b": truey}')]
   t.matchSnapshot(tokens, 'Test invalid token')
 })
