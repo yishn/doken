@@ -4,15 +4,15 @@ const {regexRule, createTokenizer} = require('..')
 t.test('Create JSON tokenizer', async t => {
   let tokenize = createTokenizer({
     rules: [
-      regexRule('_whitespace', /^\s+/, {lineBreaks: true}),
-      regexRule('brace', /^[{}]/),
-      regexRule('bracket', /^[\[\]]/),
-      regexRule('colon', /^:/),
-      regexRule('comma', /^,/),
-      regexRule('string', /^"([^"\n\\]|\\[^\n])*"/),
-      regexRule('number', /^(-|\+)?\d+(.\d+)?/),
-      regexRule('boolean', /^(true|false)\b/),
-      regexRule('null', /^null\b/)
+      regexRule('_whitespace', /\s+/y, {lineBreaks: true}),
+      regexRule('brace', /[{}]/y),
+      regexRule('bracket', /[\[\]]/y),
+      regexRule('colon', /:/y),
+      regexRule('comma', /,/y),
+      regexRule('string', /"([^"\n\\]|\\[^\n])*"/y),
+      regexRule('number', /(-|\+)?\d+(.\d+)?/y),
+      regexRule('boolean', /(true|false)\b/y),
+      regexRule('null', /null\b/y)
     ]
   })
 

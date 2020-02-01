@@ -8,12 +8,22 @@ exports.regexRule = function(
     condition = match => true
   } = {}
 ) {
+  if (!regex.sticky && !regex.global) {
+    throw new TypeError(
+      'Either sticky (/y, recommended) or global (/g) has to be enabled for the regular expresion.'
+    )
+  }
+
   return {
     type,
     lineBreaks,
-    match(input) {
+    match(input, position) {
+      regex.lastIndex = position
+
       let match = regex.exec(input)
-      if (match == null || match.index !== 0 || !condition(match)) return null
+      if (match == null || match.index !== position || !condition(match)) {
+        return null
+      }
 
       return {
         length: length(match),
@@ -34,7 +44,6 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
     let row = 0
     let col = 0
     let pos = 0
-    let restInput = input
 
     return {
       [Symbol.iterator]() {
@@ -42,16 +51,18 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
       },
 
       next() {
-        while (restInput.length > 0) {
-          let token = null
+        while (pos < input.length) {
+          let token, tokenText
           let lineBreaks = false
 
           for (let rule of rules) {
-            let match = rule.match(restInput)
+            let match = rule.match(input, pos)
             if (match == null) continue
 
             let value = match.value
-            if (value === undefined) value = restInput.slice(0, match.length)
+            if (value === undefined) {
+              value = tokenText = input.substr(pos, match.length)
+            }
 
             if (token == null || token.length < match.length) {
               token = {
@@ -72,7 +83,7 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
           if (token == null) {
             token = {
               type: null,
-              value: restInput[0],
+              value: input[pos],
               row,
               col,
               pos,
@@ -88,15 +99,18 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
           let lastNewLineIndex = -1
 
           if (lineBreaks) {
-            newLineCount = Array.from(restInput.slice(0, token.length)).filter(
-              (c, i) => {
-                if (c === '\n') {
-                  lastNewLineIndex = i
-                  return true
-                }
-                return false
+            if (tokenText == null) {
+              tokenText = input.substr(pos, token.length)
+            }
+
+            newLineCount = Array.from(tokenText).filter((c, i) => {
+              if (c === '\n') {
+                lastNewLineIndex = i
+                return true
               }
-            ).length
+
+              return false
+            }).length
 
             row += newLineCount
           }
@@ -108,7 +122,6 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
           }
 
           pos += token.length
-          restInput = restInput.slice(token.length)
 
           // Return token
 

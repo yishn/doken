@@ -10,7 +10,7 @@ export interface Token {
 export interface Rule {
   type: string
   lineBreaks?: boolean
-  match(input: string): RuleMatch | null
+  match(input: string, position: number): RuleMatch | null
 }
 
 export interface RuleMatch {
