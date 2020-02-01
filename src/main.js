@@ -84,20 +84,24 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
 
           // Update source position
 
-          let newlines = 0
+          let newLineCount = 0
           let lastNewLineIndex = -1
 
           if (lineBreaks) {
-            newlines = Array.from(
-              restInput.slice(0, token.length)
-            ).filter((c, i) =>
-              c === '\n' ? ((lastNewLineIndex = i), true) : false
+            newLineCount = Array.from(restInput.slice(0, token.length)).filter(
+              (c, i) => {
+                if (c === '\n') {
+                  lastNewLineIndex = i
+                  return true
+                }
+                return false
+              }
             ).length
 
-            row += newlines
+            row += newLineCount
           }
 
-          if (newlines > 0) {
+          if (newLineCount > 0) {
             col = token.length - lastNewLineIndex - 1
           } else {
             col += token.length
