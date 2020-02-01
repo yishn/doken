@@ -9,7 +9,8 @@ export interface Token {
 
 export interface Rule {
   type: string
-  match?(input: string): RuleMatch | null
+  match(input: string): RuleMatch | null
+  lineBreaks?: boolean
 }
 
 export interface RuleMatch {
@@ -20,13 +21,11 @@ export interface RuleMatch {
 export function regexRule(
   type: string,
   regex: RegExp,
-  value?: (match: RegExpExecArray) => any
-): Rule
-
-export function keywordRule(
-  type: string,
-  regex: RegExp,
-  keywords: string[]
+  options: {
+    lineBreaks?: boolean
+    value?: (match: RegExpExecArray) => any
+    condition?: (match: RegExpExecArray) => boolean
+  }
 ): Rule
 
 export function createTokenizer(options: {

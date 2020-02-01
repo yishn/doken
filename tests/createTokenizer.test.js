@@ -1,18 +1,18 @@
 const t = require('tap')
-const {regexRule, keywordRule, createTokenizer} = require('..')
+const {regexRule, createTokenizer} = require('..')
 
 t.test('Create JSON tokenizer', async t => {
   let tokenize = createTokenizer({
     rules: [
-      regexRule('_whitespace', /^\s+/),
+      regexRule('_whitespace', /^\s+/, {lineBreaks: true}),
       regexRule('brace', /^[{}]/),
       regexRule('bracket', /^[\[\]]/),
       regexRule('colon', /^:/),
       regexRule('comma', /^,/),
       regexRule('string', /^"([^"\n\\]|\\[^\n])*"/),
       regexRule('number', /^(-|\+)?\d+(.\d+)?/),
-      keywordRule('boolean', /^\w+/, ['true', 'false']),
-      keywordRule('null', /^\w+/, ['null'])
+      regexRule('boolean', /^(true|false)\b/),
+      regexRule('null', /^null\b/)
     ]
   })
 
@@ -33,11 +33,8 @@ t.test('Create JSON tokenizer', async t => {
   // Test token position tracking
 
   for (let token of tokens) {
-    t.equal(input.slice(token.pos, token.pos + token.length), token.value)
-    t.equal(
-      lines[token.row].slice(token.col, token.col + token.length),
-      token.value
-    )
+    t.equal(input.substr(token.pos, token.length), token.value)
+    t.equal(lines[token.row].substr(token.col, token.length), token.value)
   }
 
   // Test reconstruction

@@ -1,29 +1,20 @@
-exports.regexRule = function(type, regex, value = match => match[0]) {
+exports.regexRule = function(
+  type,
+  regex,
+  {lineBreaks, value = match => match[0], condition = match => true} = {}
+) {
   return {
     type,
     match(input) {
       let match = regex.exec(input)
-      if (match == null || match.index !== 0) return null
+      if (match == null || match.index !== 0 || !condition(match)) return null
 
       return {
         length: match[0].length,
         value: value(match)
       }
-    }
-  }
-}
-
-exports.keywordRule = function(type, regex, keywords) {
-  let rule = exports.regexRule(type, regex)
-
-  return {
-    type,
-    match(input) {
-      let match = rule.match(input)
-      if (match == null || !keywords.includes(match.value)) return null
-
-      return match
-    }
+    },
+    lineBreaks
   }
 }
 
@@ -48,9 +39,10 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
       next() {
         while (restInput.length > 0) {
           let token = null
+          let mightContainLineBreaks = false
 
-          for (let {type, match: rule} of rules) {
-            let match = rule(restInput)
+          for (let rule of rules) {
+            let match = rule.match(restInput)
             if (match == null) continue
 
             let value = match.value
@@ -58,13 +50,15 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
 
             if (token == null || token.length < match.length) {
               token = {
-                type,
+                type: rule.type,
                 value,
                 row,
                 col,
                 pos,
                 length: match.length
               }
+
+              mightContainLineBreaks = !!rule.lineBreaks
             }
 
             if (strategy === 'first') break
@@ -79,18 +73,27 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
               pos,
               length: 1
             }
+
+            mightContainLineBreaks = true
           }
 
           // Update source position
 
-          let newlineIndices = Array.from(restInput.slice(0, token.length))
-            .map((c, i) => (c === '\n' ? i : null))
-            .filter(x => x != null)
+          let newlines = 0
+          let lastNewLineIndex = -1
 
-          row += newlineIndices.length
+          if (mightContainLineBreaks) {
+            newlines = Array.from(
+              restInput.slice(0, token.length)
+            ).filter((c, i) =>
+              c === '\n' ? ((lastNewLineIndex = i), true) : false
+            ).length
 
-          if (newlineIndices.length > 0) {
-            col = token.length - newlineIndices.slice(-1)[0] - 1
+            row += newlines
+          }
+
+          if (newlines > 0) {
+            col = token.length - lastNewLineIndex - 1
           } else {
             col += token.length
           }
