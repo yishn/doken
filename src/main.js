@@ -1,12 +1,7 @@
 exports.regexRule = function(
   type,
   regex,
-  {
-    lineBreaks,
-    length = match => match[0].length,
-    value = match => match[0],
-    condition = match => true
-  } = {}
+  {lineBreaks, value = match => match[0], condition = match => true} = {}
 ) {
   if (!regex.sticky && !regex.global) {
     throw new TypeError(
@@ -26,7 +21,7 @@ exports.regexRule = function(
       }
 
       return {
-        length: length(match),
+        length: match[0],
         value: value(match)
       }
     }

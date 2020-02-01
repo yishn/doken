@@ -23,7 +23,6 @@ export function regexRule(
   regex: RegExp,
   options: {
     lineBreaks?: boolean
-    length?: (match: RegExpExecArray) => number
     value?: (match: RegExpExecArray) => any
     condition?: (match: RegExpExecArray) => boolean
   }
