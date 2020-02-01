@@ -27,7 +27,13 @@ exports.keywordRule = function(type, regex, keywords) {
   }
 }
 
-exports.createTokenizer = function({rules}) {
+exports.createTokenizer = function({rules, strategy = 'first'}) {
+  if (!['first', 'longest'].includes(strategy)) {
+    throw new TypeError(
+      "Only 'first' and 'longest' are allowed as values for the strategy option."
+    )
+  }
+
   return function tokenize(input) {
     let row = 0
     let col = 0
@@ -50,16 +56,18 @@ exports.createTokenizer = function({rules}) {
             let value = match.value
             if (value === undefined) value = restInput.slice(0, match.length)
 
-            token = {
-              type,
-              value,
-              row,
-              col,
-              pos,
-              length: match.length
+            if (token == null || token.length < match.length) {
+              token = {
+                type,
+                value,
+                row,
+                col,
+                pos,
+                length: match.length
+              }
             }
 
-            break
+            if (strategy === 'first') break
           }
 
           if (token == null) {

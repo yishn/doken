@@ -31,4 +31,5 @@ export function keywordRule(
 
 export function createTokenizer(options: {
   rules: Rule[]
+  strategy?: 'first' | 'longest'
 }): (input: string) => IterableIterator<Token>
