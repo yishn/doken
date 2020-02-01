@@ -1,17 +1,28 @@
 exports.regexRule = function(type, regex, value = match => match[0]) {
   return {
     type,
-    match: input => {
+    match(input) {
       let match = regex.exec(input)
       if (match == null || match.index !== 0) return null
 
-      let val = value(match)
-      if (val == null) return null
-
       return {
         length: match[0].length,
-        value: val
+        value: value(match)
       }
+    }
+  }
+}
+
+exports.keywordRule = function(type, regex, keywords) {
+  let rule = exports.regexRule(type, regex)
+
+  return {
+    type,
+    match(input) {
+      let match = rule.match(input)
+      if (match == null || !keywords.includes(match.value)) return null
+
+      return match
     }
   }
 }

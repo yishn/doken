@@ -23,6 +23,12 @@ export function regexRule(
   value?: (match: RegExpExecArray) => any
 ): Rule
 
+export function keywordRule(
+  type: string,
+  regex: RegExp,
+  keywords: string[]
+): Rule
+
 export function createTokenizer(options: {
   rules: Rule[]
 }): (input: string) => IterableIterator<Token>

@@ -1,5 +1,5 @@
 const t = require('tap')
-const {regexRule, createTokenizer} = require('..')
+const {regexRule, keywordRule, createTokenizer} = require('..')
 
 t.test('Create JSON tokenizer', async t => {
   let tokenize = createTokenizer({
@@ -11,12 +11,8 @@ t.test('Create JSON tokenizer', async t => {
       regexRule('comma', /^,/),
       regexRule('string', /^"([^"\n\\]|\\[^\n])*"/),
       regexRule('number', /^(-|\+)?\d+(.\d+)?/),
-      regexRule('boolean', /^\w+/, match =>
-        ['true', 'false'].includes(match[0]) ? match[0] : null
-      ),
-      regexRule('null', /^\w+/, match =>
-        match[0] === 'null' ? match[0] : null
-      )
+      keywordRule('boolean', /^\w+/, ['true', 'false']),
+      keywordRule('null', /^\w+/, ['null'])
     ]
   })
 
