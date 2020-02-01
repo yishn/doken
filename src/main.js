@@ -21,7 +21,7 @@ exports.regexRule = function(
       }
 
       return {
-        length: match[0],
+        length: match[0].length,
         value: value(match)
       }
     }
