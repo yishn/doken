@@ -17,15 +17,15 @@ const {createTokenizer, regexRule} = require('doken')
 
 const tokenizeJSON = createTokenizer({
   rules: [
-    regexRule('_whitespace', /^\s+/),
+    regexRule('_whitespace', /^\s+/, {lineBreaks: true}),
     regexRule('brace', /^[{}]/),
     regexRule('bracket', /^[\[\]]/),
     regexRule('colon', /^:/),
     regexRule('comma', /^,/),
     regexRule('string', /^"([^"\n\\]|\\[^\n])*"/),
     regexRule('number', /^(-|\+)?\d+(.\d+)?/),
-    regexRule('boolean', /^(true|false)(?!\w)/),
-    regexRule('null', /^null(?!\w)/)
+    regexRule('boolean', /^(true|false)\b/),
+    regexRule('null', /^null\b/)
   ]
 })
 
