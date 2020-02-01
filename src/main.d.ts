@@ -9,8 +9,8 @@ export interface Token {
 
 export interface Rule {
   type: string
-  match(input: string): RuleMatch | null
   lineBreaks?: boolean
+  match(input: string): RuleMatch | null
 }
 
 export interface RuleMatch {
@@ -23,6 +23,7 @@ export function regexRule(
   regex: RegExp,
   options: {
     lineBreaks?: boolean
+    length?: (match: RegExpExecArray) => number
     value?: (match: RegExpExecArray) => any
     condition?: (match: RegExpExecArray) => boolean
   }

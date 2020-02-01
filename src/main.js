@@ -1,20 +1,25 @@
 exports.regexRule = function(
   type,
   regex,
-  {lineBreaks, value = match => match[0], condition = match => true} = {}
+  {
+    lineBreaks,
+    length = match => match[0].length,
+    value = match => match[0],
+    condition = match => true
+  } = {}
 ) {
   return {
     type,
+    lineBreaks,
     match(input) {
       let match = regex.exec(input)
       if (match == null || match.index !== 0 || !condition(match)) return null
 
       return {
-        length: match[0].length,
+        length: length(match),
         value: value(match)
       }
-    },
-    lineBreaks
+    }
   }
 }
 
@@ -39,7 +44,7 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
       next() {
         while (restInput.length > 0) {
           let token = null
-          let mightContainLineBreaks = false
+          let lineBreaks = false
 
           for (let rule of rules) {
             let match = rule.match(restInput)
@@ -58,7 +63,7 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
                 length: match.length
               }
 
-              mightContainLineBreaks = !!rule.lineBreaks
+              lineBreaks = !!rule.lineBreaks
             }
 
             if (strategy === 'first') break
@@ -74,7 +79,7 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
               length: 1
             }
 
-            mightContainLineBreaks = true
+            lineBreaks = true
           }
 
           // Update source position
@@ -82,7 +87,7 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
           let newlines = 0
           let lastNewLineIndex = -1
 
-          if (mightContainLineBreaks) {
+          if (lineBreaks) {
             newlines = Array.from(
               restInput.slice(0, token.length)
             ).filter((c, i) =>
