@@ -1,6 +1,6 @@
 {
   "name": "doken",
-  "version": "0.0.8-alpha",
+  "version": "1.0.0",
   "description": "A minimalistic, general purpose tokenizer generator",
   "main": "./src/main.js",
   "scripts": {
