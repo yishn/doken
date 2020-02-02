@@ -46,11 +46,14 @@ A rule object contains the following fields:
   rule might match line breaks and you want to track it correctly.
 - `match` `<Function>` - A function with the following signature:
 
-  ```js
-  (input: <string>, position: <number>) -> null | {
-    length: <number>,
-    value?: <any>
-  }
+  <!-- prettier-ignore -->
+  ```ts
+  (input: string, position: number) =>
+    null |
+    {
+      length: number,
+      value: any
+    }
   ```
 
   This function will try to get the token of given `type` at given `position` in
@@ -78,9 +81,21 @@ A token will be represented by an object with the following fields:
 ### `doken.createTokenizer(options)`
 
 - `options` `<object>`
-  - `rules` `<Array>`
-  - `strategy` `'first' | 'longest'` _(Optional)_
+  - `rules` [`<Array<Rule>>`](#rule-object)
+  - `strategy` `'first' | 'longest'` _(Optional)_ - Default: `'first'`
 - Returns: `<Function>`
+
+Generates a tokenize function with the following signature:
+
+```ts
+(input: string) => IterableIterator<Token>
+```
+
+This function will attempt to tokenize given `input`, yielding
+[tokens](#token-object) matched by given `rules` one by one.
+
+Set `strategy` to `'longest'` to match the token with the rule that matches the
+most characters instead of using the rule that matches first.
 
 ### `doken.regexRule(type, regex[, options])`
 
@@ -90,6 +105,18 @@ A token will be represented by an object with the following fields:
 - `options` `<object>`
   - `lineBreaks` `<boolean>` _(Optional)_ - Set this property to `true` if this
     rule might match line breaks and you want to track it correctly.
-  - `value` `<Function>` _(Optional)_
-  - `condition` `<Function>` _(Optional)_
+  - `value` `<Function>` _(Optional)_ - A function for calculating the token
+    value out of the match.
+  - `condition` `<Function>` _(Optional)_ - A function for indicating whether to
+    discard match or not.
 - Returns: [`<Rule>`](#rule-object)
+
+Returns a [rule](#rule-object) that attempts to match input string with the
+given `regex`.
+
+`value` can be set to a function `(match: RegExpExecArray) => any`. The
+generated token will have the returned value as `value`.
+
+`condition` can be set to a function `(match: RegExpExecArray) => boolean`.
+Return `false` to indicate to discard matched result and go on with the next
+rule.
