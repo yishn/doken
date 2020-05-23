@@ -40,6 +40,39 @@ exports.regexRule = function(
   }
 }
 
+exports.tokenizerRule = function(
+  type,
+  tokenize,
+  {
+    lineBreaks = false,
+    value = (tokens, state) => tokens,
+    last = (tokens, state) => false,
+    condition = (tokens, state) => true,
+    nextState = (tokens, state) => state
+  } = {}
+) {
+  return {
+    type,
+    lineBreaks,
+    match(input, position, state) {
+      let tokensIter = tokenize(input)
+      tokensIter.col = this.col
+      tokensIter.row = this.row
+      tokensIter.pos = position
+
+      let tokens = [...tokensIter]
+      if (!condition(tokens, state)) return null
+
+      return {
+        length: tokensIter.pos - position,
+        value: value(tokens, state),
+        last: last(tokens, state),
+        state: nextState(tokens, state)
+      }
+    }
+  }
+}
+
 exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
   if (!['first', 'longest'].includes(strategy)) {
     throw new TypeError(
@@ -65,7 +98,7 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
           let lineBreaks = false
 
           for (let rule of rules) {
-            match = rule.match(input, this.pos, this.state)
+            match = rule.match.call(this, input, this.pos, this.state)
             if (match == null) continue
 
             let value = match.value

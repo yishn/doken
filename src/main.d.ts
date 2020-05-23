@@ -36,6 +36,24 @@ export function regexRule<T extends string, V = string, S = {}>(
   }
 ): Rule<T, V, S>
 
+export function tokenizerRule<
+  T extends string,
+  ST extends string,
+  SV,
+  V = Token<ST, SV>[],
+  S = {}
+>(
+  type: T,
+  tokenize: IterableIterator<Token<ST, SV>>,
+  options?: {
+    lineBreaks?: boolean
+    value?: (tokens: Token<ST, SV>[], state: Readonly<S>) => V
+    last?: (tokens: Token<ST, SV>[], state: Readonly<S>) => boolean
+    condition?: (tokens: Token<ST, SV>[], state: Readonly<S>) => boolean
+    nextState?: (tokens: Token<ST, SV>[], state: Readonly<S>) => S
+  }
+): Rule<T, V, S>
+
 export function createTokenizer<T extends string, V, S = {}>(options: {
   rules: Rule<T, V, S>[]
   strategy?: 'first' | 'longest'
