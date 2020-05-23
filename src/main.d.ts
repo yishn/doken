@@ -10,7 +10,11 @@ export interface Token<T extends string, V = string> {
 export interface Rule<T extends string, V = string, S = {}> {
   type: T
   lineBreaks?: boolean
-  match(input: string, position: number, state: Readonly<S>): RuleMatch<V, S> | null
+  match(
+    input: string,
+    position: number,
+    state: Readonly<S>
+  ): RuleMatch<V, S> | null
 }
 
 export interface RuleMatch<V = string, S = {}> {
