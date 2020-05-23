@@ -48,37 +48,38 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
   }
 
   return function tokenize(input) {
-    let row = 0
-    let col = 0
-    let pos = 0
-    let done = false
-
     return {
+      state,
+      row: 0,
+      col: 0,
+      pos: 0,
+      done: false,
+
       [Symbol.iterator]() {
         return this
       },
 
       next() {
-        while (!done && pos < input.length) {
+        while (!this.done && this.pos < input.length) {
           let token, tokenText, match
           let lineBreaks = false
 
           for (let rule of rules) {
-            match = rule.match(input, pos, state)
+            match = rule.match(input, this.pos, this.state)
             if (match == null) continue
 
             let value = match.value
             if (value === undefined) {
-              value = tokenText = input.substr(pos, match.length)
+              value = tokenText = input.substr(this.pos, match.length)
             }
 
             if (token == null || token.length < match.length) {
               token = {
                 type: rule.type,
                 value,
-                row,
-                col,
-                pos,
+                row: this.row,
+                col: this.col,
+                pos: this.pos,
                 length: match.length
               }
 
@@ -91,10 +92,10 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
           if (token == null) {
             token = {
               type: null,
-              value: input[pos],
-              row,
-              col,
-              pos,
+              value: input[this.pos],
+              row: this.row,
+              col: this.col,
+              pos: this.pos,
               length: 1
             }
 
@@ -108,7 +109,7 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
 
           if (lineBreaks) {
             if (tokenText == null) {
-              tokenText = input.substr(pos, token.length)
+              tokenText = input.substr(this.pos, token.length)
             }
 
             newLineCount = Array.from(tokenText).filter((c, i) => {
@@ -120,22 +121,22 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
               return false
             }).length
 
-            row += newLineCount
+            this.row += newLineCount
           }
 
           if (newLineCount > 0) {
-            col = token.length - lastNewLineIndex - 1
+            this.col = token.length - lastNewLineIndex - 1
           } else {
-            col += token.length
+            this.col += token.length
           }
 
-          pos += token.length
+          this.pos += token.length
 
           // Return token
 
           if (match != null && match.state != null) {
-            state = match.state
-            done = !!match.last
+            this.state = match.state
+            this.done = !!match.last
           }
 
           if (token.type == null || token.type[0] !== '_') {
