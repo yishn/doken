@@ -7,18 +7,19 @@ export interface Token<T extends string> {
   length: number
 }
 
-export interface Rule<T extends string> {
+export interface Rule<T extends string, S = {}> {
   type: T
   lineBreaks?: boolean
-  match(input: string, position: number): RuleMatch | null
+  match(input: string, position: number, state: S): RuleMatch<S> | null
 }
 
-export interface RuleMatch {
+export interface RuleMatch<S = {}> {
   length: number
   value?: any
+  state?: S
 }
 
-export function regexRule<T extends string>(
+export function regexRule<T extends string, S = {}>(
   type: T,
   regex: RegExp,
   options: {
@@ -26,9 +27,10 @@ export function regexRule<T extends string>(
     value?: (match: RegExpExecArray) => any
     condition?: (match: RegExpExecArray) => boolean
   }
-): Rule<T>
+): Rule<T, S>
 
-export function createTokenizer<T extends string>(options: {
-  rules: Rule<T>[]
+export function createTokenizer<T extends string, S = {}>(options: {
+  rules: Rule<T, S>[]
   strategy?: 'first' | 'longest'
+  state?: S
 }): (input: string) => IterableIterator<Token<T>>

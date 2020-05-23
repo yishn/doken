@@ -1,7 +1,12 @@
 exports.regexRule = function(
   type,
   regex,
-  {lineBreaks, value = match => match[0], condition = match => true} = {}
+  {
+    lineBreaks = false,
+    value = match => match[0],
+    condition = match => true,
+    nextState = (state, match) => state
+  } = {}
 ) {
   if (!regex.sticky && !regex.global) {
     throw new TypeError(
@@ -12,7 +17,7 @@ exports.regexRule = function(
   return {
     type,
     lineBreaks,
-    match(input, position) {
+    match(input, position, state) {
       regex.lastIndex = position
 
       let match = regex.exec(input)
@@ -22,13 +27,14 @@ exports.regexRule = function(
 
       return {
         length: match[0].length,
-        value: value(match)
+        value: value(match),
+        state: nextState(state, match)
       }
     }
   }
 }
 
-exports.createTokenizer = function({rules, strategy = 'first'}) {
+exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
   if (!['first', 'longest'].includes(strategy)) {
     throw new TypeError(
       "Only 'first' and 'longest' are allowed as values for the strategy option."
@@ -47,11 +53,11 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
 
       next() {
         while (pos < input.length) {
-          let token, tokenText
+          let token, tokenText, match
           let lineBreaks = false
 
           for (let rule of rules) {
-            let match = rule.match(input, pos)
+            match = rule.match(input, pos, state)
             if (match == null) continue
 
             let value = match.value
@@ -119,6 +125,10 @@ exports.createTokenizer = function({rules, strategy = 'first'}) {
           pos += token.length
 
           // Return token
+
+          if (match != null && match.state != null) {
+            state = match.state
+          }
 
           if (token.type == null || token.type[0] !== '_') {
             return {value: token, done: false}
