@@ -10,7 +10,7 @@ export interface Token<T extends string, V = string> {
 export interface Rule<T extends string, V = string, S = {}> {
   type: T
   lineBreaks?: boolean
-  match(input: string, position: number, state: S): RuleMatch<V, S> | null
+  match(input: string, position: number, state: Readonly<S>): RuleMatch<V, S> | null
 }
 
 export interface RuleMatch<V = string, S = {}> {
@@ -25,10 +25,10 @@ export function regexRule<T extends string, V = string, S = {}>(
   regex: RegExp,
   options?: {
     lineBreaks?: boolean
-    value?: (match: RegExpExecArray, state: S) => V
-    last?: (match: RegExpExecArray, state: S) => boolean
-    condition?: (match: RegExpExecArray, state: S) => boolean
-    nextState?: (match: RegExpExecArray, state: S) => S
+    value?: (match: RegExpExecArray, state: Readonly<S>) => V
+    last?: (match: RegExpExecArray, state: Readonly<S>) => boolean
+    condition?: (match: RegExpExecArray, state: Readonly<S>) => boolean
+    nextState?: (match: RegExpExecArray, state: Readonly<S>) => S
   }
 ): Rule<T, V, S>
 
