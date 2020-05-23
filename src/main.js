@@ -3,9 +3,10 @@ exports.regexRule = function(
   regex,
   {
     lineBreaks = false,
-    value = match => match[0],
-    condition = match => true,
-    nextState = (state, match) => state
+    value = (match, state) => match[0],
+    last = (match, state) => false,
+    condition = (match, state) => true,
+    nextState = (match, state) => state
   } = {}
 ) {
   if (!regex.sticky && !regex.global) {
@@ -21,14 +22,19 @@ exports.regexRule = function(
       regex.lastIndex = position
 
       let match = regex.exec(input)
-      if (match == null || match.index !== position || !condition(match)) {
+      if (
+        match == null ||
+        match.index !== position ||
+        !condition(match, state)
+      ) {
         return null
       }
 
       return {
         length: match[0].length,
-        value: value(match),
-        state: nextState(state, match)
+        value: value(match, state),
+        last: last(match, state),
+        state: nextState(match, state)
       }
     }
   }
@@ -45,6 +51,7 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
     let row = 0
     let col = 0
     let pos = 0
+    let done = false
 
     return {
       [Symbol.iterator]() {
@@ -52,7 +59,7 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
       },
 
       next() {
-        while (pos < input.length) {
+        while (!done && pos < input.length) {
           let token, tokenText, match
           let lineBreaks = false
 
@@ -128,6 +135,7 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
 
           if (match != null && match.state != null) {
             state = match.state
+            done = !!match.last
           }
 
           if (token.type == null || token.type[0] !== '_') {
