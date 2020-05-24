@@ -29,6 +29,7 @@ export function regexRule<T extends string, V = string, S = {}>(
   regex: RegExp,
   options?: {
     lineBreaks?: boolean
+    stateCondition?: (state: Readonly<S>) => boolean
     value?: (match: RegExpExecArray, state: Readonly<S>) => V
     last?: (match: RegExpExecArray, state: Readonly<S>) => boolean
     condition?: (match: RegExpExecArray, state: Readonly<S>) => boolean
@@ -47,6 +48,7 @@ export function tokenizerRule<
   tokenize: IterableIterator<Token<ST, SV>>,
   options?: {
     lineBreaks?: boolean
+    stateCondition?: (state: Readonly<S>) => boolean
     value?: (tokens: Token<ST, SV>[], state: Readonly<S>) => V
     last?: (tokens: Token<ST, SV>[], state: Readonly<S>) => boolean
     condition?: (tokens: Token<ST, SV>[], state: Readonly<S>) => boolean

@@ -3,6 +3,7 @@ exports.regexRule = function(
   regex,
   {
     lineBreaks = false,
+    stateCondition = state => true,
     value = (match, state) => match[0],
     last = (match, state) => false,
     condition = (match, state) => true,
@@ -19,6 +20,8 @@ exports.regexRule = function(
     type,
     lineBreaks,
     match(input, position, state) {
+      if (!stateCondition(state)) return null
+
       regex.lastIndex = position
 
       let match = regex.exec(input)
@@ -45,6 +48,7 @@ exports.tokenizerRule = function(
   tokenize,
   {
     lineBreaks = false,
+    stateCondition = state => true,
     value = (tokens, state) => tokens,
     last = (tokens, state) => false,
     condition = (tokens, state) => true,
@@ -55,6 +59,8 @@ exports.tokenizerRule = function(
     type,
     lineBreaks,
     match(input, position, state) {
+      if (!stateCondition(state)) return null
+
       let tokensIter = tokenize(input)
       tokensIter.col = this.col
       tokensIter.row = this.row
@@ -177,6 +183,7 @@ exports.createTokenizer = function({rules, strategy = 'first', state = {}}) {
           }
         }
 
+        this.done = true
         return {done: true}
       }
     }
