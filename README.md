@@ -29,7 +29,7 @@ const tokenizeJSON = createTokenizer({
   ]
 })
 
-let tokens = tokenizeJSON("{a: 'Hello World!'}")
+let tokens = tokenizeJSON(`{"a": "Hello World!"}`)
 
 console.log([...tokens])
 ```
