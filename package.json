@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "A minimalistic, general purpose tokenizer generator",
   "main": "./src/main.js",
+  "types": "./src/main.d.ts",
   "scripts": {
     "test": "cd tests && tap",
     "format": "prettier \"**/*.{{j,t}s,md}\" --write",
