@@ -38,8 +38,8 @@ export function regexRule<T extends string | number, V = string, S = {}>(
 ): Rule<T, V, S>
 
 export function tokenizerRule<
-  T extends string,
-  ST extends string,
+  T extends string | number,
+  ST extends string | number,
   SV,
   V = Token<ST, SV>[],
   S = {}
