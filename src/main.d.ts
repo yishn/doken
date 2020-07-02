@@ -1,4 +1,4 @@
-export interface Token<T extends string, V = string> {
+export interface Token<T extends string | number, V = string> {
   type: T | null
   value: V
   row: number
@@ -7,7 +7,7 @@ export interface Token<T extends string, V = string> {
   length: number
 }
 
-export interface Rule<T extends string, V = string, S = {}> {
+export interface Rule<T extends string | number, V = string, S = {}> {
   type: T
   lineBreaks?: boolean
   match(
@@ -24,7 +24,7 @@ export interface RuleMatch<V = string, S = {}> {
   state?: S
 }
 
-export function regexRule<T extends string, V = string, S = {}>(
+export function regexRule<T extends string | number, V = string, S = {}>(
   type: T,
   regex: RegExp,
   options?: {
@@ -56,7 +56,7 @@ export function tokenizerRule<
   }
 ): Rule<T, V, S>
 
-export function createTokenizer<T extends string, V, S = {}>(options: {
+export function createTokenizer<T extends string | number, V, S = {}>(options: {
   rules: Rule<T, V, S>[]
   strategy?: 'first' | 'longest'
   state?: S
