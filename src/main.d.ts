@@ -24,17 +24,19 @@ export interface RuleMatch<V = string, S = {}> {
   state?: S
 }
 
+export interface RuleOptions<T, V = string, S = {}> {
+  lineBreaks?: boolean
+  stateCondition?: (state: Readonly<S>) => boolean
+  value?: (data: T, state: Readonly<S>) => V
+  last?: (data: T, state: Readonly<S>) => boolean
+  condition?: (data: T, state: Readonly<S>) => boolean
+  nextState?: (data: T, state: Readonly<S>) => S
+}
+
 export function regexRule<T extends string | number, V = string, S = {}>(
   type: T,
   regex: RegExp,
-  options?: {
-    lineBreaks?: boolean
-    stateCondition?: (state: Readonly<S>) => boolean
-    value?: (match: RegExpExecArray, state: Readonly<S>) => V
-    last?: (match: RegExpExecArray, state: Readonly<S>) => boolean
-    condition?: (match: RegExpExecArray, state: Readonly<S>) => boolean
-    nextState?: (match: RegExpExecArray, state: Readonly<S>) => S
-  }
+  options?: RuleOptions<RegExpExecArray>
 ): Rule<T, V, S>
 
 export function tokenizerRule<
@@ -46,14 +48,7 @@ export function tokenizerRule<
 >(
   type: T,
   tokenize: IterableIterator<Token<ST, SV>>,
-  options?: {
-    lineBreaks?: boolean
-    stateCondition?: (state: Readonly<S>) => boolean
-    value?: (tokens: Token<ST, SV>[], state: Readonly<S>) => V
-    last?: (tokens: Token<ST, SV>[], state: Readonly<S>) => boolean
-    condition?: (tokens: Token<ST, SV>[], state: Readonly<S>) => boolean
-    nextState?: (tokens: Token<ST, SV>[], state: Readonly<S>) => S
-  }
+  options?: RuleOptions<Token<ST, SV>[]>
 ): Rule<T, V, S>
 
 export function createTokenizer<T extends string | number, V, S = {}>(options: {
